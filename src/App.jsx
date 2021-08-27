@@ -1,9 +1,7 @@
 import * as React from "react";
-import { Mesh, Vector3 } from "three";
 
-import { TransformControls, useGLTF } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import * as THREE from "three";
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 
 export const OrbitControls = React.forwardRef(

@@ -1,25 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Suspense, useMemo } from 'react'
+import { useLoader } from 'react-three-fiber'
+import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader'
 
-function App() {
+const DefaultModel = () => (
+    <meshBasicMaterial attach="material" color="hotpink" />
+)
+
+const SvgShape = ({ shape, color, index }) => (
+  <mesh>
+    <meshLambertMaterial
+      attach="material"
+      color={color}
+      /*
+        HACK: Offset SVG polygons by index
+        The paths from SVGLoader Z-fight.
+        This fix causes stacking problems with detailed SVGs.
+      */
+      polygonOffset
+      polygonOffsetFactor={index * -0.1}
+    />
+    <shapeBufferGeometry attach="geometry" args={[shape]} />
+  </mesh>
+)
+
+const SvgAsync = React.memo(({ url, sceneRef }) => {
+  const { paths } = useLoader(SVGLoader, url)
+  const shapes = useMemo(
+    () =>
+      paths.flatMap((path, index) =>
+        path.toShapes(true).map(shape => ({ index, shape, color: path.color }))
+      ),
+    [paths]
+  )
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    <group
+      ref={sceneRef}
+      children={shapes.map((props, key) => (
+        <SvgShape key={key} {...props} />
+      ))}
+      rotation={[-Math.PI / 2, 0, Math.PI]}
+      scale={[-0.01, 0.01, 0.01]}
+    />
+  )
+})
 
-export default App;
+const App = props => (
+  <Suspense
+    fallback={<DefaultModel {...props} />}
+    children={<SvgAsync {...props} />}
+  />
+)
+
+export default App

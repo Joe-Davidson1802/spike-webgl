@@ -90,9 +90,9 @@ function Suzanne({ onClick }) {
       ref={ref}
       object={nodes.root}
       position={[0, 0, 0]}
+      onPointerOver={(event) => console.log(event)}
       onClick={() => (ref.current.rotation.z += 0.1)}
-    >
-    </primitive>
+    ></primitive>
   );
 }
 

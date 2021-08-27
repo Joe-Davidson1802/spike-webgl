@@ -4,6 +4,16 @@ import * as THREE from 'three'
 import { useGLTF } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
+const getRanHex = size => {
+  let result = [];
+  let hexRef = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+
+  for (let n = 0; n < size; n++) {
+    result.push(hexRef[Math.floor(Math.random() * 16)]);
+  }
+  return result.join('');
+}
+
 
 export const OrbitControls = React.forwardRef(
   (
@@ -85,10 +95,17 @@ export const OrbitControls = React.forwardRef(
 function Suzanne({ onClick }) {
   const ref = React.useRef();
   const { nodes } = useGLTF("/scene.gltf", "/");
-  console.log(nodes);
-  const BasicMaterial = new THREE.MeshBasicMaterial({color: new THREE.Color("#520B3E")})
   console.log(nodes)
-  nodes.root.children.forEach((mesh, i) => { mesh.material = BasicMaterial; });
+  Object.values(nodes).forEach(v => {
+    if (v.type == "Mesh") {
+      const BasicMaterial = new THREE.MeshBasicMaterial({color: new THREE.Color("#"+getRanHex(6))})
+
+      v.material = BasicMaterial
+
+
+    }
+
+  })
   return (
     <primitive
       ref={ref}
@@ -104,7 +121,7 @@ function App() {
   return (
 
     <>
-      <Canvas pixelRatio={[1, 1]} camera={{ position: [1, 2, 1], fov: 50 }}>
+      <Canvas pixelRatio={[1, 1]} camera={{ position: [1, 4, 1], fov: 50 }}>
         <React.Suspense fallback={null}>
           <ambientLight intensity={1} />
           <Suzanne onClick={setM} />

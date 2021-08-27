@@ -86,23 +86,22 @@ function Suzanne({ onClick }) {
   const { nodes } = useGLTF("/scene.gltf", "/");
   console.log(nodes);
   return (
-    <mesh
+    <primitive
       ref={ref}
-      geometry={nodes.Suzanne_1.geometry}
+      object={nodes.root}
       position={[0, 0, 0]}
-      rotation={[0, 0, 0]}
       onClick={() => (ref.current.rotation.z += 0.1)}
     >
-      <meshStandardMaterial color="#ff0000" opacity={1} />
-    </mesh>
+      //<meshStandardMaterial color="#ff0000" opacity={1} />
+    </primitive>
   );
 }
 
 function App() {
   return (
-    <Canvas pixelRatio={[1, 4]} camera={{ position: [1, 2, 1], fov: 50 }}>
+    <Canvas pixelRatio={[1, 1]} camera={{ position: [1, 2, 1], fov: 50 }}>
       <React.Suspense fallback={null}>
-        <pointLight intensity={1} position={[0, 2, 0]} />
+        <ambientLight intensity={1} />
         <Suzanne />
         <OrbitControls
           enablePan={false}

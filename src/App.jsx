@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import * as THREE from 'three'
 import { useGLTF } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
@@ -85,30 +86,37 @@ function Suzanne({ onClick }) {
   const ref = React.useRef();
   const { nodes } = useGLTF("/scene.gltf", "/");
   console.log(nodes);
+  const BasicMaterial = new THREE.MeshBasicMaterial({color: new THREE.Color("#520B3E")})
+  console.log(nodes)
+  nodes.root.children.forEach((mesh, i) => { mesh.material = BasicMaterial; });
   return (
     <primitive
       ref={ref}
       object={nodes.root}
       position={[0, 0, 0]}
-      onPointerOver={(event) => console.log(event)}
-      onClick={() => (ref.current.rotation.z += 0.1)}
+      onClick={(event) => onClick(event.object.parent.name)}
     ></primitive>
   );
 }
 
 function App() {
+  const [m, setM] = React.useState('')
   return (
-    <Canvas pixelRatio={[1, 1]} camera={{ position: [1, 2, 1], fov: 50 }}>
-      <React.Suspense fallback={null}>
-        <ambientLight intensity={1} />
-        <Suzanne />
-        <OrbitControls
-          enablePan={false}
-          enableZoom={false}
-          enableRotate={true}
-        />
-      </React.Suspense>
-    </Canvas>
+
+    <>
+      <Canvas pixelRatio={[1, 1]} camera={{ position: [1, 2, 1], fov: 50 }}>
+        <React.Suspense fallback={null}>
+          <ambientLight intensity={1} />
+          <Suzanne onClick={setM} />
+          <OrbitControls
+            enablePan={false}
+            enableZoom={false}
+            enableRotate={true}
+          />
+        </React.Suspense>
+      </Canvas>
+      {`Last clicked: ${m}`}
+    </>
   );
 }
 

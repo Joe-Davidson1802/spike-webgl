@@ -92,7 +92,6 @@ function Suzanne({ onClick }) {
       position={[0, 0, 0]}
       onClick={() => (ref.current.rotation.z += 0.1)}
     >
-      //<meshStandardMaterial color="#ff0000" opacity={1} />
     </primitive>
   );
 }

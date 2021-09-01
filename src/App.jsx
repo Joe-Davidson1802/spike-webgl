@@ -4,6 +4,7 @@ import * as THREE from "three";
 import { useCamera, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
+import { Spinner } from "@chakra-ui/react";
 const getRanHex = (size) => {
   let result = [];
   let hexRef = [
@@ -75,8 +76,8 @@ export const OrbitControls = React.forwardRef(
 
       if (onStart) controls.addEventListener("start", onStart);
       if (onEnd) controls.addEventListener("end", onEnd);
-      controls.minPolarAngle = controls.getPolarAngle()
-      controls.maxPolarAngle = controls.getPolarAngle()
+      controls.minPolarAngle = controls.getPolarAngle();
+      controls.maxPolarAngle = controls.getPolarAngle();
 
       return () => {
         controls.removeEventListener("change", callback);
@@ -129,11 +130,10 @@ function Suzanne({ onClick }) {
   React.useEffect(() => {
     Object.values(nodes).forEach((v) => {
       if (v.type === "Mesh") {
-
         v.material = unselected();
       }
     });
-  }, [nodes])
+  }, [nodes]);
   return (
     <primitive
       ref={ref}
@@ -141,16 +141,16 @@ function Suzanne({ onClick }) {
       position={[0, 0, -1]}
       //rotation={[-1.3, 0, -0.02]}
       onClick={(event) => {
-        event.object.material = selected()
+        event.object.material = selected();
 
-        onClick(event.object.parent.name)
+        onClick(event.object.parent.name);
       }}
     ></primitive>
   );
 }
 function Scene({ callback }) {
   const ctrl = React.useRef();
-  console.log(ctrl)
+  console.log(ctrl);
   return (
     <>
       <pointLight intensity={1} position={[3, 4, 1]} />
@@ -165,6 +165,17 @@ function Scene({ callback }) {
     </>
   );
 }
+function Loading() {
+  return (
+    <Spinner
+      thickness="4px"
+      speed="0.65s"
+      emptyColor="gray.200"
+      color="blue.500"
+      size="xl"
+    />
+  );
+}
 
 function App() {
   const [m, setM] = React.useState("");
@@ -172,7 +183,7 @@ function App() {
   return (
     <>
       <Canvas pixelRatio={[1, 1]} camera={{ position: [0, 1, 4] }}>
-        <React.Suspense fallback={null}>
+        <React.Suspense fallback={<Loading/>}>
           <Scene callback={setM} />
         </React.Suspense>
       </Canvas>

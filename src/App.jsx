@@ -1,19 +1,35 @@
 import * as React from "react";
 
-import * as THREE from 'three'
-import { useGLTF } from "@react-three/drei";
+import * as THREE from "three";
+import { useCamera, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
-const getRanHex = size => {
+const getRanHex = (size) => {
   let result = [];
-  let hexRef = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+  let hexRef = [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+  ];
 
   for (let n = 0; n < size; n++) {
     result.push(hexRef[Math.floor(Math.random() * 16)]);
   }
-  return result.join('');
-}
-
+  return result.join("");
+};
 
 export const OrbitControls = React.forwardRef(
   (
@@ -59,6 +75,8 @@ export const OrbitControls = React.forwardRef(
 
       if (onStart) controls.addEventListener("start", onStart);
       if (onEnd) controls.addEventListener("end", onEnd);
+      controls.minPolarAngle = controls.getPolarAngle()
+      controls.maxPolarAngle = controls.getPolarAngle()
 
       return () => {
         controls.removeEventListener("change", callback);
@@ -94,42 +112,53 @@ export const OrbitControls = React.forwardRef(
 
 function Suzanne({ onClick }) {
   const ref = React.useRef();
-  const { nodes } = useGLTF("/scene.gltf", "/");
-  console.log(nodes)
-  Object.values(nodes).forEach(v => {
-    if (v.type == "Mesh") {
-      const BasicMaterial = new THREE.MeshBasicMaterial({color: new THREE.Color("#"+getRanHex(6))})
+  const { nodes, materials } = useGLTF("/scene.gltf", "/");
+  console.log(nodes);
+  Object.values(nodes).forEach((v) => {
+    if (v.type === "Mesh") {
+      const BasicMaterial = new THREE.MeshBasicMaterial({
+        color: new THREE.Color("#" + getRanHex(6)),
+      });
 
-      v.material = BasicMaterial
-
-
+      v.material = BasicMaterial;
     }
-
-  })
+  });
   return (
     <primitive
       ref={ref}
-      object={nodes.root}
-      position={[0, 0, 0]}
+      object={nodes.Car_Rig_68}
+      position={[0, 0, -1]}
+      //rotation={[-1.3, 0, -0.02]}
       onClick={(event) => onClick(event.object.parent.name)}
     ></primitive>
   );
 }
+function Scene({ callback }) {
+  const ctrl = React.useRef();
+  console.log(ctrl)
+  return (
+    <>
+      <pointLight intensity={1} position={[3, 4, 1]} />
+      <Suzanne onClick={callback} />
+
+      <OrbitControls
+        ref={ctrl}
+        enablePan={false}
+        enableZoom={false}
+        enableRotate={true}
+      />
+    </>
+  );
+}
 
 function App() {
-  const [m, setM] = React.useState('')
-  return (
+  const [m, setM] = React.useState("");
 
+  return (
     <>
-      <Canvas pixelRatio={[1, 1]} camera={{ position: [1, 4, 1], fov: 50 }}>
+      <Canvas pixelRatio={[1, 1]} camera={{ position: [0, 1, 4] }}>
         <React.Suspense fallback={null}>
-          <ambientLight intensity={1} />
-          <Suzanne onClick={setM} />
-          <OrbitControls
-            enablePan={false}
-            enableZoom={false}
-            enableRotate={true}
-          />
+          <Scene callback={setM} />
         </React.Suspense>
       </Canvas>
       {`Last clicked: ${m}`}

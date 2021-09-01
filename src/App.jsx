@@ -4,7 +4,8 @@ import * as THREE from "three";
 import { useCamera, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
-import { Spinner } from "@chakra-ui/react";
+import { Spinner, Flex, Heading, ChakraProvider } from "@chakra-ui/react";
+import { zeroTheme } from "./themes";
 const getRanHex = (size) => {
   let result = [];
   let hexRef = [
@@ -165,30 +166,49 @@ function Scene({ callback }) {
     </>
   );
 }
-function Loading() {
+
+const NavBar = () => {
   return (
-    <Spinner
-      thickness="4px"
-      speed="0.65s"
-      emptyColor="gray.200"
-      color="blue.500"
-      size="xl"
-    />
+    <>
+      <Flex
+        direction="column"
+        justify="space-between"
+        w="100vw"
+        align="center"
+        p={{ base: "10px", md: "20px" }}
+        id="nav-bar"
+      >
+        <Heading
+          // as="h1"
+          id="aviva-zero-heading"
+          transition="0.7s"
+          className="logo"
+          // fontSize={history.location.pathname === "/" ? { base: "80px", sm: "100px", md: "120px", lg: "140px" } : { base: "50px", sm: "60px", md: "70px", lg: "80px" }}
+          fontWeight="900"
+          lineHeight="0.6em"
+          variant="insurance-price"
+          // mt={history.location.pathname === "/" ? { base: "10px", sm: "20px", md: "30px", lg: "40px" } : { base: "0px", sm: "0px", md: "0px", lg: "0px" }}
+        >
+          zero
+        </Heading>
+      </Flex>
+    </>
   );
-}
+};
 
 function App() {
   const [m, setM] = React.useState("");
 
   return (
-    <>
+    <ChakraProvider theme={zeroTheme}>
+      <NavBar />
       <Canvas pixelRatio={[1, 1]} camera={{ position: [0, 1, 4] }}>
-        <React.Suspense fallback={<Loading/>}>
+        <React.Suspense fallback={null}>
           <Scene callback={setM} />
         </React.Suspense>
       </Canvas>
       {`Last clicked: ${m}`}
-    </>
+    </ChakraProvider>
   );
 }
 

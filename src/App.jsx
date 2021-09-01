@@ -110,26 +110,41 @@ export const OrbitControls = React.forwardRef(
   }
 );
 
+function unselected() {
+  return new THREE.MeshBasicMaterial({
+    color: new THREE.Color("#" + getRanHex(6)),
+  });
+}
+
+function selected() {
+  return new THREE.MeshBasicMaterial({
+    color: new THREE.Color("#" + getRanHex(6)),
+  });
+}
+
 function Suzanne({ onClick }) {
   const ref = React.useRef();
   const { nodes, materials } = useGLTF("/scene.gltf", "/");
   console.log(nodes);
-  Object.values(nodes).forEach((v) => {
-    if (v.type === "Mesh") {
-      const BasicMaterial = new THREE.MeshBasicMaterial({
-        color: new THREE.Color("#" + getRanHex(6)),
-      });
+  React.useEffect(() => {
+    Object.values(nodes).forEach((v) => {
+      if (v.type === "Mesh") {
 
-      v.material = BasicMaterial;
-    }
-  });
+        v.material = unselected();
+      }
+    });
+  }, [nodes])
   return (
     <primitive
       ref={ref}
       object={nodes.Car_Rig_68}
       position={[0, 0, -1]}
       //rotation={[-1.3, 0, -0.02]}
-      onClick={(event) => onClick(event.object.parent.name)}
+      onClick={(event) => {
+        event.object.material = selected()
+
+        onClick(event.object.parent.name)
+      }}
     ></primitive>
   );
 }

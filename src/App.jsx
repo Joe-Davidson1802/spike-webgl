@@ -46,6 +46,58 @@ const NavBar = () => {
   );
 };
 
+function friendlyName(ugly) {
+  switch (ugly) {
+    case "window_f":
+      return "Windscreen";
+    case "hood":
+      return "Bonnet";
+    case "door_fr":
+      return "Door (front driver-side)";
+    case "door_rr":
+      return "Door (rear driver-side)";
+    case "door_fl":
+      return "Door (front passenger-side)";
+    case "door_rl":
+      return "Door (rear passenger-side)";
+    case "wheel_fr":
+      return "Wheel (front driver-side)";
+    case "wheel_rr":
+      return "Wheel (rear driver-side)";
+    case "wheel_fl":
+      return "Wheel (front passenger-side)";
+    case "wheel_rl":
+      return "Wheel (rear passenger-side)";
+    case "window_fr":
+      return "Window (front driver-side)";
+    case "window_rr":
+      return "Window (rear driver-side)";
+    case "window_fl":
+      return "Window (front passenger-side)";
+    case "window_rl":
+      return "Window (rear passenger-side)";
+    case "body":
+      return "Body";
+    case "bumper_front":
+      return "Front Bumper";
+    case "bumper_rear":
+      return "Rear Bumper";
+    case "headlights_fr":
+      return "Headlight (driver-side)";
+    case "headlights_fl":
+      return "Headlight (passenger-side)";
+    case "mirror_r":
+      return "Mirror (driver-side)";
+    case "mirror_l":
+      return "Mirror (passenger-side)";
+    case "door_rear":
+      return "Door (rear boot)";
+    case "window_r":
+      return "Rear Window";
+  }
+  return ugly;
+}
+
 function App() {
   const [m, setM] = React.useState(null);
 
@@ -61,9 +113,14 @@ function App() {
           <Tbody>
             {m?.currentlySelected.map((part) => (
               <Tr>
-                <Td>{part}</Td>
+                <Td>{friendlyName(part)}</Td>
                 <Td>
-                  <Slider style={{ width: "100%" }} defaultValue={0} min={0} max={4}>
+                  <Slider
+                    style={{ width: "100%" }}
+                    defaultValue={0}
+                    min={0}
+                    max={4}
+                  >
                     <SliderTrack>
                       <SliderFilledTrack />
                     </SliderTrack>

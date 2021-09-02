@@ -54,7 +54,7 @@ function App() {
       <NavBar />
       <DamageCapture3D
         onChange={setM}
-        style={{ position: "relative", height: "50vh", borderWidth: 2 }}
+        style={{ position: "relative", height: "50vh" }}
       />
       <Container>
         <Table>

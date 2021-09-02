@@ -146,7 +146,7 @@ function Vehicle({ onChange }) {
         currentlySelected: newList,
       });
     } else {
-      const newList = [name, ...selected];
+      const newList = [...selected, name];
       setSelected(newList);
       onChange({
         selected: name,
@@ -192,7 +192,7 @@ function Scene({ onChange }) {
 export default ({ onChange, ...props }) => {
   return (
     <div {...props}>
-      <Canvas pixelRatio={[1, 1]} camera={{ position: [0, 1, 4] }}>
+      <Canvas pixelRatio={[1, 1]} camera={{ position: [0, 1.5, 3] }}>
         <React.Suspense fallback={null}>
           <Scene onChange={onChange} />
         </React.Suspense>

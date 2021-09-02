@@ -1,8 +1,21 @@
 import * as React from "react";
 
-import { Flex, Heading, ChakraProvider } from "@chakra-ui/react";
+import {
+  Flex,
+  Heading,
+  Container,
+  ChakraProvider,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
+  Table,
+  Td,
+  Tr,
+  Tbody,
+} from "@chakra-ui/react";
 import { zeroTheme } from "./themes";
-import DamageCapture3D from "./DamageCapture3D.js"
+import DamageCapture3D from "./DamageCapture3D.js";
 
 const NavBar = () => {
   return (
@@ -34,16 +47,34 @@ const NavBar = () => {
 };
 
 function App() {
-  const [m, setM] = React.useState("");
+  const [m, setM] = React.useState(null);
 
   return (
     <ChakraProvider theme={zeroTheme}>
       <NavBar />
       <DamageCapture3D
         onChange={setM}
-        style={{ position: "relative", width: "100%", height: 900 }}
+        style={{ position: "relative", height: "50vh", borderWidth: 2 }}
       />
-      {`Last clicked: ${JSON.stringify(m)}`}
+      <Container>
+        <Table>
+          <Tbody>
+            {m?.currentlySelected.map((part) => (
+              <Tr>
+                <Td>{part}</Td>
+                <Td>
+                  <Slider style={{ width: "100%" }} defaultValue={0} min={0} max={4}>
+                    <SliderTrack>
+                      <SliderFilledTrack />
+                    </SliderTrack>
+                    <SliderThumb />
+                  </Slider>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </Container>
     </ChakraProvider>
   );
 }

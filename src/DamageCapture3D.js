@@ -162,7 +162,9 @@ function Vehicle({ onChange }) {
         object={nodes.root}
         position={[0, 0, 0]}
         onClick={(event) => {
+          if (event.delta > 10) return;
           event.stopPropagation();
+          console.log(event);
           toggleSelected(event.object.name);
         }}
       ></primitive>

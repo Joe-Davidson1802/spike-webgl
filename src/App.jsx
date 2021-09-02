@@ -1,10 +1,12 @@
 import * as React from "react";
 
 import * as THREE from "three";
+import { SVGRenderer } from "three/examples/jsm/renderers/SVGRenderer";
 import { useCamera, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { Spinner, Flex, Heading, ChakraProvider } from "@chakra-ui/react";
+import { OutlineEffect } from "three/examples/jsm/effects/OutlineEffect.js";
 import { zeroTheme } from "./themes";
 const getRanHex = (size) => {
   let result = [];
@@ -114,47 +116,81 @@ export const OrbitControls = React.forwardRef(
 
 function unselected() {
   return new THREE.MeshBasicMaterial({
-    color: new THREE.Color("#" + getRanHex(6)),
+    color: new THREE.Color("#48BB78"),
   });
 }
 
 function selected() {
   return new THREE.MeshBasicMaterial({
-    color: new THREE.Color("#" + getRanHex(6)),
+    color: new THREE.Color("#1C4532"),
   });
 }
 
 function Suzanne({ onClick }) {
   const ref = React.useRef();
-  const { nodes, materials } = useGLTF("/scene.gltf", "/");
-  console.log(nodes);
-  React.useEffect(() => {
+  const { nodes } = useGLTF("/car.gltf", "/");
+
+  const edges = React.useMemo(
+    () =>
+      Object.values(nodes)
+        .filter((n) => n.type === "Mesh")
+        .map((n) => {
+          const e = new THREE.EdgesGeometry(n.geometry, 15);
+          console.log(e);
+          const l = new THREE.LineSegments(
+            e,
+            new THREE.LineBasicMaterial({ color: new THREE.Color("#1C4532") })
+          );
+          var pos = new THREE.Vector3();
+          var scale = new THREE.Vector3();
+          var rot = new THREE.Quaternion();
+          n.getWorldPosition(pos);
+          n.getWorldQuaternion(rot);
+          n.getWorldScale(scale);
+          l.position.copy(pos);
+          l.scale.copy(scale);
+          l.quaternion.copy(rot);
+          return l;
+        }),
+    [nodes]
+  );
+  console.log(edges);
+  const redrawColours = () => {
     Object.values(nodes).forEach((v) => {
       if (v.type === "Mesh") {
         v.material = unselected();
       }
     });
-  }, [nodes]);
-  return (
-    <primitive
-      ref={ref}
-      object={nodes.Car_Rig_68}
-      position={[0, 0, -1]}
-      //rotation={[-1.3, 0, -0.02]}
-      onClick={(event) => {
-        event.object.material = selected();
+  };
+  React.useEffect(redrawColours, [nodes]);
 
-        onClick(event.object.parent.name);
-      }}
-    ></primitive>
+  return (
+    <group dispose={null}>
+      <primitive
+        ref={ref}
+        object={nodes.root}
+        position={[0, 0, 0]}
+        //rotation={[-1.3, 0, -0.02]}
+        onClick={(event) => {
+          event.stopPropagation();
+          redrawColours();
+          event.object.material = selected();
+          console.log(event);
+
+          onClick(event.object.name);
+        }}
+      ></primitive>
+      {edges.map((e) => (
+        <primitive key={e.uuid} object={e} renderOrder={100}></primitive>
+      ))}
+    </group>
   );
 }
 function Scene({ callback }) {
   const ctrl = React.useRef();
-  console.log(ctrl);
   return (
     <>
-      <pointLight intensity={1} position={[3, 4, 1]} />
+      <ambientLight intensity={1} />
       <Suzanne onClick={callback} />
 
       <OrbitControls

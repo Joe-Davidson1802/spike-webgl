@@ -20,7 +20,7 @@ export const zeroTheme = extendTheme({
         Slider,
     },
     colors: {
-        primary: '#C9E3DD',
+        primary: '#F9FCFA',
         secondary: '#07745B',
         tertiary: '#DDEEEC',
         font: '#313532',

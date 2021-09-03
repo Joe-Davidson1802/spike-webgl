@@ -2,6 +2,8 @@ import * as React from "react";
 
 import {
   Flex,
+  SimpleGrid,
+  Box,
   Heading,
   Container,
   ChakraProvider,
@@ -16,6 +18,8 @@ import {
 } from "@chakra-ui/react";
 import { zeroTheme } from "./themes";
 import DamageCapture3D from "./DamageCapture3D.js";
+import Accordion from "./Accordion";
+import { BiQuestionMark } from "react-icons/bi";
 
 const NavBar = () => {
   return (
@@ -97,6 +101,37 @@ function friendlyName(ugly) {
   }
   return ugly;
 }
+function damageOptions() {
+  return [
+    (<span>Scratch</span>),
+    (<span>Scrape</span>),
+    (<span>Dent</span>),
+    (<span>Detached</span>),
+  ]
+
+}
+
+function getOptions(state) {
+  return state?.currentlySelected.map((part) => ({
+    title: friendlyName(part),
+    icon: BiQuestionMark,
+    contents: (
+      <>
+      <div padding="30px" margin="30px">
+      <Slider style={{ width: "100%", marginLeft:"30px", marginRight:"30px" }} defaultValue={0} min={0} max={damageOptions().length-1}>
+        <SliderTrack>
+          <SliderFilledTrack />
+        </SliderTrack>
+        <SliderThumb />
+      </Slider>
+      </div>
+      <SimpleGrid columns={damageOptions().length} marginTop="15px" spacing={2}>
+        {damageOptions().map(opt => <Box style={{textAlign: "center"}}>{opt}</Box>)}
+      </SimpleGrid>
+      </>
+    ),
+  }));
+}
 
 function App() {
   const [m, setM] = React.useState(null);
@@ -109,28 +144,7 @@ function App() {
         style={{ position: "relative", height: "50vh" }}
       />
       <Container>
-        <Table>
-          <Tbody>
-            {m?.currentlySelected.map((part) => (
-              <Tr>
-                <Td>{friendlyName(part)}</Td>
-                <Td>
-                  <Slider
-                    style={{ width: "100%" }}
-                    defaultValue={0}
-                    min={0}
-                    max={4}
-                  >
-                    <SliderTrack>
-                      <SliderFilledTrack />
-                    </SliderTrack>
-                    <SliderThumb />
-                  </Slider>
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
+        {m?.currentlySelected ? <Accordion options={getOptions(m)} /> : ""}
       </Container>
     </ChakraProvider>
   );

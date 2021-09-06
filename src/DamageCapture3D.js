@@ -109,7 +109,6 @@ function Vehicle({ onChange }) {
         .filter((n) => n.type === "Mesh")
         .map((n) => {
           const e = new THREE.EdgesGeometry(n.geometry, 15);
-          console.log(e);
           const l = new THREE.LineSegments(
             e,
             new THREE.LineBasicMaterial({ color: new THREE.Color("#1C4532") })
@@ -164,7 +163,6 @@ function Vehicle({ onChange }) {
         onClick={(event) => {
           if (event.delta > 10) return;
           event.stopPropagation();
-          console.log(event);
           toggleSelected(event.object.name);
         }}
       ></primitive>

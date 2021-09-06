@@ -103,12 +103,11 @@ function friendlyName(ugly) {
 }
 function damageOptions() {
   return [
-    (<span>Scratch</span>),
-    (<span>Scrape</span>),
-    (<span>Dent</span>),
-    (<span>Detached</span>),
-  ]
-
+    <span>Scratch</span>,
+    <span>Scrape</span>,
+    <span>Dent</span>,
+    <span>Detached</span>,
+  ];
 }
 
 function getOptions(state) {
@@ -117,24 +116,45 @@ function getOptions(state) {
     icon: BiQuestionMark,
     contents: (
       <>
-      <div padding="30px" margin="30px">
-      <Slider style={{ width: "100%", marginLeft:"30px", marginRight:"30px" }} defaultValue={0} min={0} max={damageOptions().length-1}>
-        <SliderTrack>
-          <SliderFilledTrack />
-        </SliderTrack>
-        <SliderThumb />
-      </Slider>
-      </div>
-      <SimpleGrid columns={damageOptions().length} marginTop="15px" spacing={2}>
-        {damageOptions().map(opt => <Box style={{textAlign: "center"}}>{opt}</Box>)}
-      </SimpleGrid>
+        <div padding="30px" margin="30px">
+          <Slider
+            style={{ width: "100%", marginLeft: "30px", marginRight: "30px" }}
+            defaultValue={0}
+            min={0}
+            max={damageOptions().length - 1}
+          >
+            <SliderTrack>
+              <SliderFilledTrack />
+            </SliderTrack>
+            <SliderThumb />
+          </Slider>
+        </div>
+        <SimpleGrid
+          columns={damageOptions().length}
+          marginTop="15px"
+          spacing={2}
+        >
+          {damageOptions().map((opt) => (
+            <Box style={{ textAlign: "center" }}>{opt}</Box>
+          ))}
+        </SimpleGrid>
       </>
     ),
   }));
 }
 
+function selectedIndex(state) {
+  return state?.currentlySelected.indexOf(state?.selected);
+}
+
 function App() {
   const [m, setM] = React.useState(null);
+  const [manual, setManual] = React.useState(null);
+  console.log(manual);
+  const selected = React.useMemo(() => {
+    setManual(null);
+    return selectedIndex(m);
+  }, [m]);
 
   return (
     <ChakraProvider theme={zeroTheme}>
@@ -144,7 +164,15 @@ function App() {
         style={{ position: "relative", height: "50vh" }}
       />
       <Container>
-        {m?.currentlySelected ? <Accordion options={getOptions(m)} /> : ""}
+        {m?.currentlySelected ? (
+          <Accordion
+            index={[manual != null ? manual : selected]}
+            onChange={(e) => setManual(e)}
+            options={getOptions(m)}
+          />
+        ) : (
+          ""
+        )}
       </Container>
     </ChakraProvider>
   );

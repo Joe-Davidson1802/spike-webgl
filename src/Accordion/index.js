@@ -19,7 +19,7 @@ import {
 } from "./Accordion.module.css";
 
 const renderItem = ({ title, contents, icon }) => (
-  <AccordionItem>
+  <AccordionItem key={title} id={title}>
     <h2>
       <AccordionButton className={accordionButtonText}>
         <Icon as={icon} boxSize={6} className={accordionIcon} />
@@ -33,9 +33,11 @@ const renderItem = ({ title, contents, icon }) => (
   </AccordionItem>
 );
 
-const Accordion = ({ options }) => {
+const Accordion = ({ options, ...props }) => {
   return (
-    <CAccordion allowToggle>{options.map((opt) => renderItem(opt))}</CAccordion>
+    <CAccordion {...props} allowToggle>
+      {options.map((opt) => renderItem(opt))}
+    </CAccordion>
   );
 };
 

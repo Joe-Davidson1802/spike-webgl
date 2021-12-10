@@ -43,7 +43,7 @@ const NavBar = () => {
           variant="insurance-price"
           // mt={history.location.pathname === "/" ? { base: "10px", sm: "20px", md: "30px", lg: "40px" } : { base: "0px", sm: "0px", md: "0px", lg: "0px" }}
         >
-          zero
+          Damage Capture
         </Heading>
       </Flex>
     </>
